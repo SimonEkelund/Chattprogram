@@ -12,10 +12,14 @@ namespace Chattprogram
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Texture2D chattWindow;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            graphics.PreferredBackBufferWidth = 1000;
+            graphics.PreferredBackBufferHeight = 600;
         }
 
         /// <summary>
@@ -28,6 +32,8 @@ namespace Chattprogram
         {
             // TODO: Add your initialization logic here
 
+            IsMouseVisible = true;
+
             base.Initialize();
         }
 
@@ -39,6 +45,9 @@ namespace Chattprogram
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            chattWindow = Content.Load<Texture2D>("vitt");
+            
 
             // TODO: use this.Content to load your game content here
         }
@@ -74,6 +83,12 @@ namespace Chattprogram
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            spriteBatch.Begin();
+
+            spriteBatch.Draw(chattWindow, new Vector2(200, 100), Color.White);
+
+            spriteBatch.End();
 
             // TODO: Add your drawing code here
 
