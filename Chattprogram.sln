@@ -5,16 +5,40 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chattprogram", "Chattprogram\Chattprogram.csproj", "{7B46F0F3-EEC1-4A72-938C-2AAF32796416}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client_TIll_chatt", "C:\Users\simme\source\repos\Client_TIll_chatt\Client_TIll_chatt\Client_TIll_chatt.csproj", "{12CCFDF6-770D-4871-9DEA-96E1A834E476}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server_Till_Chatt", "C:\Users\simme\source\repos\Server_Till_Chatt\Server_Till_Chatt\Server_Till_Chatt.csproj", "{E4146FBE-CF03-4773-9304-1418BEE8A2A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7B46F0F3-EEC1-4A72-938C-2AAF32796416}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{7B46F0F3-EEC1-4A72-938C-2AAF32796416}.Debug|x86.ActiveCfg = Debug|x86
 		{7B46F0F3-EEC1-4A72-938C-2AAF32796416}.Debug|x86.Build.0 = Debug|x86
+		{7B46F0F3-EEC1-4A72-938C-2AAF32796416}.Release|Any CPU.ActiveCfg = Release|x86
 		{7B46F0F3-EEC1-4A72-938C-2AAF32796416}.Release|x86.ActiveCfg = Release|x86
 		{7B46F0F3-EEC1-4A72-938C-2AAF32796416}.Release|x86.Build.0 = Release|x86
+		{12CCFDF6-770D-4871-9DEA-96E1A834E476}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12CCFDF6-770D-4871-9DEA-96E1A834E476}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12CCFDF6-770D-4871-9DEA-96E1A834E476}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{12CCFDF6-770D-4871-9DEA-96E1A834E476}.Debug|x86.Build.0 = Debug|Any CPU
+		{12CCFDF6-770D-4871-9DEA-96E1A834E476}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12CCFDF6-770D-4871-9DEA-96E1A834E476}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12CCFDF6-770D-4871-9DEA-96E1A834E476}.Release|x86.ActiveCfg = Release|Any CPU
+		{12CCFDF6-770D-4871-9DEA-96E1A834E476}.Release|x86.Build.0 = Release|Any CPU
+		{E4146FBE-CF03-4773-9304-1418BEE8A2A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4146FBE-CF03-4773-9304-1418BEE8A2A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4146FBE-CF03-4773-9304-1418BEE8A2A2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E4146FBE-CF03-4773-9304-1418BEE8A2A2}.Debug|x86.Build.0 = Debug|Any CPU
+		{E4146FBE-CF03-4773-9304-1418BEE8A2A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4146FBE-CF03-4773-9304-1418BEE8A2A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4146FBE-CF03-4773-9304-1418BEE8A2A2}.Release|x86.ActiveCfg = Release|Any CPU
+		{E4146FBE-CF03-4773-9304-1418BEE8A2A2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
