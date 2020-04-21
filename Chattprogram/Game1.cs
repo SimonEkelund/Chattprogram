@@ -6,9 +6,9 @@ using System.Collections.Generic;
 
 namespace Chattprogram
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
+    
+   
+   
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
@@ -93,9 +93,13 @@ namespace Chattprogram
 
         protected override void Initialize()
         {
+
             // TODO: Add your initialization logic here
 
             IsMouseVisible = true;
+
+
+            
 
             base.Initialize();
         }
@@ -103,13 +107,15 @@ namespace Chattprogram
 
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
+            
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
 
             normalText = Content.Load<SpriteFont>("normalText");
 
             randomized = new List<int> { random.Next(0, 18), random.Next(0, 18), random.Next(0, 18),
             random.Next(0, 18)};
+
 
             chattWindow = Content.Load<Texture2D>("vitt");
 
@@ -128,32 +134,38 @@ namespace Chattprogram
 
             
 
-            // TODO: use this.Content to load your game content here
+          
+
         }
 
 
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            
         }
 
 
+
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
+
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            
 
             base.Update(gameTime);
         }
 
 
+
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
 
             spriteBatch.Begin();
 
@@ -175,7 +187,9 @@ namespace Chattprogram
 
             spriteBatch.End();
 
-            // TODO: Add your drawing code here
+            
+ 
+
 
             base.Draw(gameTime);
         }
