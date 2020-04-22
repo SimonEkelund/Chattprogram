@@ -6,9 +6,6 @@ using System.Collections.Generic;
 
 namespace Chattprogram
 {
-    
-   
-   
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
@@ -24,7 +21,6 @@ namespace Chattprogram
 
         int time = 0;
         int second = 0;
-        int minute = 0;
 
         List<string> funfacts;
 
@@ -36,7 +32,7 @@ namespace Chattprogram
 
         public void Funfacts(SpriteBatch sb)
         {
-            if (second % 10 == 0 && second > 0)
+            if (second % 30 == 0 && second > 0)
             {
                 second = 0;
                 while (taken == true)
@@ -52,7 +48,7 @@ namespace Chattprogram
                     {
                         randomized[i] = random.Next(0, 18);
 
-                        if (randomized[i] == takenList[i - 1])
+                        if (randomized[i] == takenList[i - takenList.Count] || randomized[i] == takenList[i - 1])
                         {
                             taken = true;
                             break;
@@ -66,18 +62,13 @@ namespace Chattprogram
 
                 }
 
-                
+                taken = true;
             }
-
-
 
             for (int i = 0; i < 4; i++)
             {
                 sb.DrawString(normalText, funfacts[randomized[i]], positions[i], Color.Black);
             }
-
-            
-
         }
 
 
