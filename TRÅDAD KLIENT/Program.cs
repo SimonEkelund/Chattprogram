@@ -85,13 +85,6 @@ namespace tbClientThreads
                 return;
             }
 
-            
-
-
-
-
-
-
         }
     }
 }
