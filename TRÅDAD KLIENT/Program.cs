@@ -103,9 +103,10 @@ namespace tbClientThreads
             catch (System.Net.Sockets.SocketException)
             {
                 Console.WriteLine("Frånkopplar från server...");
-                return;
+                
             }
 
+<<<<<<< HEAD
            
             
 
@@ -134,6 +135,8 @@ namespace tbClientThreads
 
 
 
+=======
+>>>>>>> e746008e4fdbda8e40f380c812142769914fe0fe
         }
     
     
