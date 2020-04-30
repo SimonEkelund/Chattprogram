@@ -10,11 +10,14 @@ namespace tbServerMutlipleClients
     class Program
     {
         private static Socket _serverSocket;
-        private static readonly List<Socket> ClientSockets = new List<Socket>();
+        private static readonly List<Socket> ClientSockets = new List<Socket>(); // lista med user
+        private static readonly List<User> Users = new List<User>();
         private const int BufferSize = 2048;
         private const int Port = 65002;
         private static readonly byte[] Buffer = new byte[BufferSize];
         private static bool _closing;
+        private static int received;
+
         static void Main()
         {
             Console.Title = "Server, stöd för flera klienter";
@@ -47,11 +50,41 @@ namespace tbServerMutlipleClients
             if (_closing)
                 return;
             Socket socket = _serverSocket.EndAccept(ar);
-            ClientSockets.Add(socket);
-            socket.BeginReceive(Buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, socket);
             Console.WriteLine("Klient ansluten...");
+
+            socket.Send(Encoding.UTF8.GetBytes("välj ett namn")); 
+            socket.BeginReceive(Buffer, 0, BufferSize, SocketFlags.None, GetUserName, socket);
+
+
+     
             _serverSocket.BeginAccept(AcceptCallback, null);
         }
+        private static void GetUserName(IAsyncResult ar) 
+        {
+           
+            Socket socket = (Socket)ar.AsyncState;
+            int received;
+            try
+            {
+                received = socket.EndReceive(ar);
+            }
+            catch (SocketException)
+            {
+                Console.WriteLine("Klient frånkopplad...");
+                socket.Close();
+                return;
+            }
+
+            string userName = Encoding.UTF8.GetString(Buffer, 0, received);
+            User u = new User(userName, 0, socket);
+            Users.Add(u);
+            ClientSockets.Add(socket);
+            socket.BeginReceive(Buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, socket);
+
+        }
+
+
+
         private static void ReceiveCallback(IAsyncResult ar)
         {
             if (_closing)
@@ -107,6 +140,8 @@ namespace tbServerMutlipleClients
                     return;
             }
             current.BeginReceive(Buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, current);
+      
+        
         }
     }
 }
