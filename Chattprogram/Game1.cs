@@ -30,7 +30,7 @@ namespace Chattprogram
 
         Rectangle send;
 
-        string text = "";
+        List<Användare> chatters = new List<Användare>();
 
         private static readonly Socket ClientSocket =
             new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -68,7 +68,7 @@ namespace Chattprogram
 
         public void Funfacts(SpriteBatch sb)
         {
-            if (second % 10 == 0 && second > 0)
+            if (second % 60 == 0 && second > 0)
             {
                 second = 0;
                 while (taken == true)
@@ -206,6 +206,10 @@ namespace Chattprogram
 
             chattwindowText = Content.Load<SpriteFont>("chattwindowText");
 
+            chatters.Add(new Användare("Gunther", 2.6f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
+            chatters.Add(new Användare("Marvin Gay", 4.3f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
+            chatters.Add(new Användare("Tom Hanks", 0f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
+
             connectToServerThread = new Thread(ConnectToServer);
 
             textBox = new TextBox(new Rectangle(400, 450, 385, 50), 70, "", GraphicsDevice, chattwindowText, Color.Black, Color.Black, 70);
@@ -258,6 +262,7 @@ namespace Chattprogram
                 if (send.Contains(mouseState.Position))
                 {
                     ClientSocket.Send(Encoding.UTF8.GetBytes("wea238g " + (textBox.Text.String)), SocketFlags.None);
+                    textBox.Clear();
                 }
             }
 
@@ -299,7 +304,7 @@ namespace Chattprogram
 
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(huge, "WAZUP", new Vector2(355, 30), Color.Black);
+            spriteBatch.DrawString(huge, "waZup", new Vector2(355, 30), Color.Black);
 
             spriteBatch.Draw(chattWindow, new Vector2(200, 100), Color.White);
 
@@ -349,8 +354,6 @@ namespace Chattprogram
             }
 
             Funfacts(spriteBatch);
-
-
 
             spriteBatch.End();
 
