@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using TRÅDAD_KLIENT;
 
 namespace tbClientThreads
 {
@@ -11,7 +13,9 @@ namespace tbClientThreads
         private static readonly Socket ClientSocket =
             new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private const int Port = 65002;
-
+       static List<User> Users = new list<User>();
+        
+        
         static void Main()
         {
             Console.Title = "Klient";
@@ -19,8 +23,18 @@ namespace tbClientThreads
             RequestLoop();
             ClientSocket.Shutdown(SocketShutdown.Both);
             ClientSocket.Close();
+            Users.Add(new User("simon", 0));
+            Users.Add(new User("jacob", 0));
         }
 
+        static void GetUser() 
+        { 
+         
+       
+        
+        
+        
+        }
         private static void ConnectToServer()
         {
             int attempts = 0;
@@ -76,15 +90,56 @@ namespace tbClientThreads
                 int received = ClientSocket.Receive(buffer, SocketFlags.None);
                 if (received == 0)
                     return;
-                Console.WriteLine(Encoding.UTF8.GetString(buffer, 0, received));
+                string test2 = Encoding.UTF8.GetString(buffer, 0, received);
+
+              
+                
+                
+                
+                
+                
                 ReceiveResponse();
             }
             catch (System.Net.Sockets.SocketException)
             {
                 Console.WriteLine("Frånkopplar från server...");
-                return;
+                
             }
 
+<<<<<<< HEAD
+           
+            
+
+
+
+
+      
         }
+   
+    private static void checkIfRight() 
+        {
+            var buffer = new byte[2048];
+            int received = ClientSocket.Receive(buffer, SocketFlags.None);
+            string test2 = Console.ReadLine();
+
+            if (test2 == "hej")
+            {
+                Console.WriteLine(Encoding.UTF8.GetString(buffer, 0, received));
+                Console.WriteLine("du skrev hej");
+
+                checkIfRight();
+
+
+
+            }
+
+
+
+=======
+>>>>>>> e746008e4fdbda8e40f380c812142769914fe0fe
+        }
+    
+    
     }
+
 }
