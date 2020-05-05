@@ -82,10 +82,10 @@ namespace tbServerMutlipleClients
             socket.BeginReceive(Buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, socket);
 
         }
+       
 
 
-
-        private static void ReceiveCallback(IAsyncResult ar)
+        private static void ReceiveCallback(IAsyncResult ar) 
         {
             if (_closing)
                 return;
@@ -102,6 +102,10 @@ namespace tbServerMutlipleClients
                 ClientSockets.Remove(current);
                 return;
             }
+           
+            
+
+
 
 
 
@@ -114,34 +118,50 @@ namespace tbServerMutlipleClients
             Console.WriteLine("Text skickad till (server lokal ip): " + clep.Address);
 
 
+            string[] textsplit = text.Split(' ');
 
-            Console.WriteLine("Mottagen text: '" + text + "' -> skickas till övriga klienter");
-
-            foreach (Socket s in ClientSockets)
+            if (textsplit[0] == "wea238g")
             {
-                if (s != current)
-                {
-                    s.Send(Encoding.UTF8.GetBytes(text));
-                    //IPEndPoint rep = s.RemoteEndPoint as IPEndPoint;
-                    //IPEndPoint lep = s.LocalEndPoint as IPEndPoint;
+                
+                Users.Add(new User(textsplit[1], 0, current));
 
-                    //Console.WriteLine("Remote: " + rep.Address);
-                    //Console.WriteLine("Local: " + lep.Address);
+            }
+
+            else
+            {
+
+
+                Console.WriteLine("Mottagen text: '" + text + "' -> skickas till övriga klienter");
+
+                foreach (Socket s in ClientSockets)
+                {
+                    if (s != current)
+                    {
+                        s.Send(Encoding.UTF8.GetBytes(text));
+                        //IPEndPoint rep = s.RemoteEndPoint as IPEndPoint;
+                        //IPEndPoint lep = s.LocalEndPoint as IPEndPoint;
+
+                        //Console.WriteLine("Remote: " + rep.Address);
+                        //Console.WriteLine("Local: " + lep.Address);
+                    }
+                }
+
+                switch (text.ToLower())
+                {
+                    case "disconnect":
+                        current.Shutdown(SocketShutdown.Both);
+                        current.Close();
+                        ClientSockets.Remove(current);
+                        Console.WriteLine("Klient frånkopplad...");
+                        return;
                 }
             }
-
-            switch (text.ToLower())
-            {
-                case "disconnect":
-                    current.Shutdown(SocketShutdown.Both);
-                    current.Close();
-                    ClientSockets.Remove(current);
-                    Console.WriteLine("Klient frånkopplad...");
-                    return;
-            }
-            current.BeginReceive(Buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, current);
+                current.BeginReceive(Buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, current);
       
         
+     
         }
+    
+    
     }
 }

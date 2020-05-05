@@ -27,14 +27,7 @@ namespace tbClientThreads
             Users.Add(new User("jacob", 0));
         }
 
-        static void GetUser() 
-        { 
-         
-       
-        
-        
-        
-        }
+      
         private static void ConnectToServer()
         {
             int attempts = 0;
@@ -106,7 +99,7 @@ namespace tbClientThreads
                 
             }
 
-<<<<<<< HEAD
+
            
             
 
@@ -135,8 +128,6 @@ namespace tbClientThreads
 
 
 
-=======
->>>>>>> e746008e4fdbda8e40f380c812142769914fe0fe
         }
     
     

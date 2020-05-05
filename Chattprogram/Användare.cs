@@ -16,14 +16,14 @@ namespace Chattprogram
         {
              name = "unkown";
              rating = 0;
-             socket = 0;
+             socket = null;
         }
 
-        public Användare(string name, int rating, int socket) 
+        public Användare(string name, int rating, Socket socket) 
         {
             this.name = name;
             this.rating = rating;
-           
+            this.socket = socket;
         
         }
 
