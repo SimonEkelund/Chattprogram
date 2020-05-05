@@ -24,9 +24,6 @@ namespace tbServerMutlipleClients
             this.name = name;
             this.rating = rating;
             this.socket = socket;
-
-
-
         }
 
         internal void Add()

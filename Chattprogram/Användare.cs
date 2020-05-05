@@ -18,16 +18,8 @@ namespace Chattprogram
             string name = "unkown";
             float rating = 0;
             Socket socket = null;
-
-        public int rating;
-        public Socket socket;
-        public Användare() 
-        {
-             name = "unkown";
-             rating = 0;
-             socket = 0;
-
         }
+        
         
         public Användare(string name, float rating, Socket socket)
         {

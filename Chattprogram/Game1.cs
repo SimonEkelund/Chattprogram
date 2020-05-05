@@ -326,6 +326,7 @@ namespace Chattprogram
                 {
                     spriteBatch.DrawString(normalText, "Connected to server", new Vector2(430, 300), Color.Green);
                     second2++;
+                    gameState = 1;
 
                     if (second2 > 300)
                     {
@@ -340,7 +341,7 @@ namespace Chattprogram
 
             if (gameState == 1)
             {
-
+                spriteBatch.DrawString(chattwindowText, "V Choose username V", new Vector2(430, 330), Color.Gray);
             }
             
 
