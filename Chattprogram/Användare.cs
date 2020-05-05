@@ -10,12 +10,15 @@ namespace Chattprogram
    public class Användare
     {
         public string name;
-        public int rating;
+
+        public float rating;
         public Socket socket;
+      
         public Användare() 
         {
              name = "unkown";
              rating = 0;
+
              socket = null;
         }
 
@@ -24,8 +27,12 @@ namespace Chattprogram
             this.name = name;
             this.rating = rating;
             this.socket = socket;
-        
+
+             
+
         }
+        
+       
 
 
 
