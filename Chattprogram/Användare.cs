@@ -13,25 +13,27 @@ namespace Chattprogram
 
         public float rating;
         public Socket socket;
+
         public Användare()
         {
             string name = "unkown";
             float rating = 0;
             Socket socket = null;
         }
-        
-        
-        public Användare(string name, float rating, Socket socket)
+
+
+        public Användare(string name, int rating, Socket socket) 
+
         {
             this.name = name;
             this.rating = rating;
-
             this.socket = socket;
 
-           
-        
+             
 
         }
+        
+       
 
 
 
