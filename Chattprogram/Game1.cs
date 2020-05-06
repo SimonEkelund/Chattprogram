@@ -206,9 +206,9 @@ namespace Chattprogram
 
             chattwindowText = Content.Load<SpriteFont>("chattwindowText");
 
-            chatters.Add(new Användare("Gunther", 2.6f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
-            chatters.Add(new Användare("Marvin Gay", 4.3f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
-            chatters.Add(new Användare("Tom Hanks", 0f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
+          //  chatters.Add(new Användare("Gunther", 2.6f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
+          //  chatters.Add(new Användare("Marvin Gay", 4.3f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
+          //  chatters.Add(new Användare("Tom Hanks", 0f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
 
             connectToServerThread = new Thread(ConnectToServer);
 
