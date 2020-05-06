@@ -52,10 +52,10 @@ namespace tbServerMutlipleClients
             Socket socket = _serverSocket.EndAccept(ar);
             Console.WriteLine("Klient ansluten...");
 
-            socket.Send(Encoding.UTF8.GetBytes("välj ett namn")); 
-            socket.BeginReceive(Buffer, 0, BufferSize, SocketFlags.None, GetUserName, socket);
+            //socket.Send(Encoding.UTF8.GetBytes("välj ett namn")); 
+            socket.BeginReceive(Buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, socket);
 
-
+            ClientSockets.Add(socket);
      
             _serverSocket.BeginAccept(AcceptCallback, null);
         }
@@ -125,6 +125,11 @@ namespace tbServerMutlipleClients
                 
                 Users.Add(new User(textsplit[1], 0, current));
 
+            }
+
+            if (Users.Count == 2)
+            {
+                Console.WriteLine("hey");
             }
 
             else
