@@ -206,9 +206,9 @@ namespace Chattprogram
 
             chattwindowText = Content.Load<SpriteFont>("chattwindowText");
 
-            chatters.Add(new Användare("Gunther", 2.6f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
-            chatters.Add(new Användare("Marvin Gay", 4.3f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
-            chatters.Add(new Användare("Tom Hanks", 0f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
+            //chatters.Add(new Användare("Gunther", 2.6f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
+            //chatters.Add(new Användare("Marvin Gay", 4.3f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
+            //chatters.Add(new Användare("Tom Hanks", 0f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
 
             connectToServerThread = new Thread(ConnectToServer);
 
@@ -259,10 +259,11 @@ namespace Chattprogram
 
             if (mouseState.LeftButton == ButtonState.Pressed && oldmouseState.LeftButton == ButtonState.Released)
             {
-                if (send.Contains(mouseState.Position))
+                if (send.Contains(mouseState.Position) && gameState == 1)
                 {
                     ClientSocket.Send(Encoding.UTF8.GetBytes("wea238g " + (textBox.Text.String)), SocketFlags.None);
                     textBox.Clear();
+
                 }
             }
 
@@ -314,9 +315,8 @@ namespace Chattprogram
 
             textBox.Draw(spriteBatch);
 
-            spriteBatch.Draw(sendButton, send, null, colour);
-
-            spriteBatch.DrawString(sendText, "SEND", new Vector2(485, 427), Color.Black);
+            
+            
 
             spriteBatch.DrawString(normalText, (mouseState.X + " " + mouseState.Y).ToString(), new Vector2(100, 100), Color.Black);
 
@@ -326,7 +326,7 @@ namespace Chattprogram
                 {
                     spriteBatch.DrawString(normalText, "Connected to server", new Vector2(430, 300), Color.Green);
                     second2++;
-                    gameState = 1;
+                    
 
                     if (second2 > 300)
                     {
@@ -342,6 +342,9 @@ namespace Chattprogram
             if (gameState == 1)
             {
                 spriteBatch.DrawString(chattwindowText, "V Choose username V", new Vector2(430, 330), Color.Gray);
+                spriteBatch.Draw(sendButton, send, null, colour);
+
+                spriteBatch.DrawString(sendText, "SEND", new Vector2(485, 427), Color.Black);
             }
             
 
