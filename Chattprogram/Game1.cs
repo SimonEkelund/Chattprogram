@@ -21,14 +21,21 @@ namespace Chattprogram
         MouseState mouseState;
         MouseState oldmouseState;
 
+        Texture2D line;
+
+        bool usersAdded = false;
+
         KeyboardState keyBoardState;
         KeyboardState oldKeyBoardState;
+
+        static List<string> usernames = new List<string>();
 
         Texture2D sendButton;
 
         Color colour;
 
         Rectangle send;
+        Rectangle refresh;
 
         List<Användare> chatters = new List<Användare>();
 
@@ -124,37 +131,33 @@ namespace Chattprogram
                     
                 }
             }
+            Thread readServerThread = new Thread(new ThreadStart(ReceiveResponse));
+
+            readServerThread.Start();
             //Console.Clear();
             connected = true;
         }
 
-        public static void ReadServer()
-        {
-            ReceiveResponse();
-        }
+        //private static void RequestLoop()
+        //{
 
-        private static void RequestLoop()
-        {
-            Thread readServerThread = new Thread(new ThreadStart(ReadServer));
 
-            readServerThread.Start();
-
-            Console.WriteLine("Skriv disconnect för att koppla från servern");
-            string requestSent = string.Empty;
-            try
-            {
-                while (requestSent.ToLower() != "disconnect")
-                {
-                    requestSent = Console.ReadLine();
-                    ClientSocket.Send(Encoding.UTF8.GetBytes(requestSent), SocketFlags.None);
-                }
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Error! - Lost server.");
-                Console.ReadLine();
-            }
-        }
+        //    Console.WriteLine("Skriv disconnect för att koppla från servern");
+        //    string requestSent = string.Empty;
+        //    try
+        //    {
+        //        while (requestSent.ToLower() != "disconnect")
+        //        {
+        //            requestSent = Console.ReadLine();
+        //            ClientSocket.Send(Encoding.UTF8.GetBytes(requestSent), SocketFlags.None);
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        Console.WriteLine("Error! - Lost server.");
+        //        Console.ReadLine();
+        //    }
+        //}
         private static void ReceiveResponse()
         {
             var buffer = new byte[2048];
@@ -163,14 +166,28 @@ namespace Chattprogram
                 int received = ClientSocket.Receive(buffer, SocketFlags.None);
                 if (received == 0)
                     return;
-                Console.WriteLine(Encoding.UTF8.GetString(buffer, 0, received));
+                string message = (Encoding.UTF8.GetString(buffer, 0, received));
+
+                string[] messageSplit = message.Split(' ');
+
+                if (messageSplit[0] == "erf77")
+                {
+                    for (int i = 1; i < messageSplit.Length; i++)
+                    {
+                        usernames.Add(messageSplit[i]);
+                    }
+                    // ------------------------> flagga för att skriva ut användarnamn
+                }
+
                 ReceiveResponse();
             }
             catch (System.Net.Sockets.SocketException)
             {
-                Console.WriteLine("Frånkopplar från server...");
+                Debug.WriteLine("Frånkopplar från server...");
                 return;
             }
+
+            
 
         }
 
@@ -201,8 +218,11 @@ namespace Chattprogram
 
             slutlig.KeyboardInput.Initialize(this, 500f, 20);
 
+            line = Content.Load<Texture2D>("lodrättsträck");
+
             sendButton = Content.Load<Texture2D>("fullsend2");
             send = new Rectangle(395, 420, 405, 30);
+            refresh = new Rectangle(205, 105, 25, 25);
 
             chattwindowText = Content.Load<SpriteFont>("chattwindowText");
 
@@ -262,14 +282,28 @@ namespace Chattprogram
             //RequestLoop();
             //ClientSocket.Shutdown(SocketShutdown.Both);
             //ClientSocket.Close();
+            if (usernames.Count == 2)
+            {
+                usersAdded = true;
+            }
 
             if (mouseState.LeftButton == ButtonState.Pressed && oldmouseState.LeftButton == ButtonState.Released)
             {
                 if (send.Contains(mouseState.Position) && gameState == 1)
                 {
                     ClientSocket.Send(Encoding.UTF8.GetBytes("wea238g " + (textBox.Text.String)), SocketFlags.None);
+                    gameState = 2;
                     textBox.Clear();
 
+                }
+                if (send.Contains(mouseState.Position) && gameState > 1)
+                {
+                    ClientSocket.Send(Encoding.UTF8.GetBytes(textBox.Text.String), SocketFlags.None);
+                    textBox.Clear();
+                }
+                if (refresh.Contains(mouseState.Position) && gameState == 2)
+                {
+                    ClientSocket.Send(Encoding.UTF8.GetBytes("erf77 sas"), SocketFlags.None);
                 }
             }
 
@@ -317,12 +351,7 @@ namespace Chattprogram
 
             //spriteBatch.DrawString(chattwindowText, textBox.Text.String, new Vector2(200, 250), Color.Black);
             
-            
-
             textBox.Draw(spriteBatch);
-
-            
-            
 
             spriteBatch.DrawString(normalText, (mouseState.X + " " + mouseState.Y).ToString(), new Vector2(100, 100), Color.Black);
 
@@ -344,15 +373,27 @@ namespace Chattprogram
                     spriteBatch.DrawString(normalText, "Connecting to server", new Vector2(430, 300), Color.Red);
                 }
             }
-
-            if (gameState == 1)
+            
+            if (gameState == 1 || usersAdded == true)
             {
-                spriteBatch.DrawString(chattwindowText, "V Choose username V", new Vector2(430, 330), Color.Gray);
-                spriteBatch.Draw(sendButton, send, null, colour);
-
-                spriteBatch.DrawString(sendText, "SEND", new Vector2(485, 427), Color.Black);
+                spriteBatch.DrawString(chattwindowText, "V Choose username V", new Vector2(490, 375), Color.Gray);
             }
             
+            
+            
+            if (gameState > 0)
+            {
+                spriteBatch.Draw(sendButton, send, null, colour);
+                spriteBatch.DrawString(sendText, "SEND", new Vector2(490, 427), Color.Black);
+
+            }
+            
+            if (gameState == 2)
+            {
+                spriteBatch.Draw(line, new Vector2(10, 100), Color.White);
+            }
+
+            spriteBatch.Draw(sendButton, refresh, null, Color.White);
 
             time += 1;
 

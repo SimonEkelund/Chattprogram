@@ -51,6 +51,18 @@
 /processorParam:TextureFormat=Compressed
 /build:huge.spritefont
 
+#begin lodrättsträck.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:lodrättsträck.png
+
 #begin normalText.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
