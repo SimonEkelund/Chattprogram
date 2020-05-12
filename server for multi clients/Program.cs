@@ -102,13 +102,7 @@ namespace tbServerMutlipleClients
                 ClientSockets.Remove(current);
                 return;
             }
-           
-            
-
-
-
-
-
+          
             string text = Encoding.UTF8.GetString(Buffer, 0, received);
 
             IPEndPoint crep = current.RemoteEndPoint as IPEndPoint;
@@ -117,21 +111,16 @@ namespace tbServerMutlipleClients
             Console.WriteLine("Text skickad från (remote klient): " + crep.Address);
             Console.WriteLine("Text skickad till (server lokal ip): " + clep.Address);
 
-
             string[] textsplit = text.Split(' ');
-
+         
+            
             if (textsplit[0] == "wea238g")
             {
                 
                 Users.Add(new User(textsplit[1], 0, current));
 
             }
-
-            if (Users.Count == 2)
-            {
-                Console.WriteLine("hey");
-            }
-
+            
             else
             {
 
@@ -160,6 +149,18 @@ namespace tbServerMutlipleClients
                         Console.WriteLine("Klient frånkopplad...");
                         return;
                 }
+
+                string chattText = Encoding.UTF8.GetString(Buffer, 0, received);
+                foreach (User u in Users)
+                {
+                    if (u.socket == current)
+                    {
+                        Console.WriteLine(u.GetName() + "// " + chattText);
+
+                    }
+                }
+
+
             }
                 current.BeginReceive(Buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, current);
       

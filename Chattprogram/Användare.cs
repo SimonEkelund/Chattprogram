@@ -32,8 +32,15 @@ namespace Chattprogram
              
 
         }
-        
-       
+
+        public string GetName()
+        {
+
+
+            return name;
+
+
+        }
 
 
 

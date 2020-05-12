@@ -263,21 +263,29 @@ namespace Chattprogram
             //ClientSocket.Shutdown(SocketShutdown.Both);
             //ClientSocket.Close();
 
-            if (mouseState.LeftButton == ButtonState.Pressed && oldmouseState.LeftButton == ButtonState.Released)
-            {
-                if (send.Contains(mouseState.Position) && gameState == 1)
-                {
-                    ClientSocket.Send(Encoding.UTF8.GetBytes("wea238g " + (textBox.Text.String)), SocketFlags.None);
-                    textBox.Clear();
 
+            bool enterpressed = Keyboard.GetState().IsKeyDown(Keys.Enter);
+
+
+            if (mouseState.LeftButton == ButtonState.Pressed && oldmouseState.LeftButton == ButtonState.Released || enterpressed)
+            {
+                
+                if((send.Contains(mouseState.Position) || enterpressed) && gameState == 2) 
+                {
+
+                   ClientSocket.Send(Encoding.UTF8.GetBytes (textBox.Text.String), SocketFlags.None);
+                   textBox.Clear();
+                }
+                if ((send.Contains(mouseState.Position) || enterpressed) && gameState == 1)
+                {
+
+                    ClientSocket.Send(Encoding.UTF8.GetBytes("wea238g " + (textBox.Text.String)), SocketFlags.None);
+                    gameState = 2;
+                    textBox.Clear();
+                   
                 }
             }
-
-            //string[] username = text.Split(' ');
-            //if (username[0] == "wea238g")
-            //{
-            //    users.name.Add(username[1]);
-            //}
+            
 
 
             if (send.Contains(mouseState.Position))
@@ -348,11 +356,18 @@ namespace Chattprogram
             if (gameState == 1)
             {
                 spriteBatch.DrawString(chattwindowText, "V Choose username V", new Vector2(430, 330), Color.Gray);
+           
+            }
+         
+            
+            if(gameState > 0)
+            {     
                 spriteBatch.Draw(sendButton, send, null, colour);
-
                 spriteBatch.DrawString(sendText, "SEND", new Vector2(485, 427), Color.Black);
             }
             
+
+
 
             time += 1;
 

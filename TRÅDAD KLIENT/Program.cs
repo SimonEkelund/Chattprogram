@@ -23,8 +23,7 @@ namespace tbClientThreads
             RequestLoop();
             ClientSocket.Shutdown(SocketShutdown.Both);
             ClientSocket.Close();
-            Users.Add(new User("simon", 0));
-            Users.Add(new User("jacob", 0));
+          
         }
 
       
