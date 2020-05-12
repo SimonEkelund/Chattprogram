@@ -46,11 +46,13 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="KeyboarInput.cs" />
+    <Compile Include="Profile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Text.cs" />
     <Compile Include="TextBox.cs" />
     <Compile Include="TextRenderer.cs" />
+    <Compile Include="UserSection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

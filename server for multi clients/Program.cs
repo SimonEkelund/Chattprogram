@@ -132,7 +132,7 @@ namespace tbServerMutlipleClients
                 string namelist = "";
                 for (int i = 0; i < Users.Count; i++)
                 {
-                    namelist += Users[i].name + " ";
+                    namelist += Users[i].name + " " + Users[i].rating + " ";
                 }
                 current.Send(Encoding.UTF8.GetBytes("erf77 " + namelist));
             }
@@ -146,7 +146,7 @@ namespace tbServerMutlipleClients
             {
 
 
-                Console.WriteLine("Mottagen text: '" + text + "' -> skickas till övriga klienter");
+                Console.WriteLine("Mottagen text: '" + text + "' -> skickas till ALLA klienter!!!!!");
 
                 foreach (Socket s in ClientSockets)
                 {
