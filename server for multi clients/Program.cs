@@ -118,9 +118,27 @@ namespace tbServerMutlipleClients
             {
                 
                 Users.Add(new User(textsplit[1], 0, current));
+                
 
             }
+
             
+
+            if (textsplit[0] == "erf77")
+            {
+                string namelist = "";
+                for (int i = 0; i < Users.Count; i++)
+                {
+                    namelist += Users[i].name + " ";
+                }
+                current.Send(Encoding.UTF8.GetBytes("erf77 " + namelist));
+            }
+
+            if (Users.Count == 2)
+            {
+                Console.WriteLine("hey");
+            }
+
             else
             {
 
