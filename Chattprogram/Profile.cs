@@ -17,16 +17,16 @@ namespace Chattprogram
         List<Profile> profiles;
         public Rectangle rectangle;
         public string name;
-        string text;
+        string rating;
         public Color color;
 
-        public Profile(Vector2 pos, List<Profile> profiles, Rectangle rectangle, string name, string text, Color color)
+        public Profile(Vector2 pos, List<Profile> profiles, Rectangle rectangle, string name, string rating, Color color)
         {
             this.pos = pos;
             this.profiles = profiles;
             this.rectangle = rectangle;
             this.name = name;
-            this.text = text;
+            this.rating = rating;
             this.color = color;
         }
         
@@ -46,11 +46,8 @@ namespace Chattprogram
 
         public void DrawProfiles(SpriteBatch sb, Texture2D texture, SpriteFont spriteFont, int index)
         {
-            
                 sb.Draw(texture, profiles[index].rectangle, Color.White);
-                sb.DrawString(spriteFont, profiles[index].text, pos, profiles[index].color);
-            
-            
+                sb.DrawString(spriteFont, profiles[index].name + " " + profiles[index].rating, pos, profiles[index].color);
         }
 
     }

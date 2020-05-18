@@ -76,13 +76,13 @@ namespace tbServerMutlipleClients
             }
 
             string userName = Encoding.UTF8.GetString(Buffer, 0, received);
-            User u = new User(userName, 0, socket);
+            User u = new User(userName, 0, socket, "");
             Users.Add(u);
             ClientSockets.Add(socket);
             socket.BeginReceive(Buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, socket);
 
         }
-       
+        
 
 
         private static void ReceiveCallback(IAsyncResult ar) 
@@ -114,7 +114,7 @@ namespace tbServerMutlipleClients
             IPEndPoint crep = current.RemoteEndPoint as IPEndPoint;
             IPEndPoint clep = current.LocalEndPoint as IPEndPoint;
 
-            Console.WriteLine("Text skickad från (remote klient): " + crep.Address);
+            Console.WriteLine("Text " + text + " skickad från (remote klient): " + crep.Address);
             Console.WriteLine("Text skickad till (server lokal ip): " + clep.Address);
 
 
@@ -123,11 +123,11 @@ namespace tbServerMutlipleClients
             if (textsplit[0] == "wea238g")
             {
                 
-                Users.Add(new User(textsplit[1], 0, current));
+                Users.Add(new User(textsplit[1], 0, current, ""));
                 
 
             }
-            if (textsplit[0] == "erf77")
+            else if (textsplit[0] == "erf77")
             {
                 string namelist = "";
                 for (int i = 0; i < Users.Count; i++)
@@ -136,30 +136,87 @@ namespace tbServerMutlipleClients
                 }
                 current.Send(Encoding.UTF8.GetBytes("erf77 " + namelist));
             }
-
-            if (Users.Count == 2)
+            else if (textsplit[0] == "swt5")
             {
-                Console.WriteLine("hey");
+                foreach (User u in Users)
+                {
+                    if (u.name == textsplit[1])
+                    {
+                        u.socket.Send(Encoding.UTF8.GetBytes("kl90 " + textsplit[2]));
+                    }
+                    
+                }
             }
+            else if (textsplit[0] == "acc47")
+            {
+                foreach (User u in Users)
+                {
+                    
+                    if (u.socket == current)
+                    {
+                        u.chattpartner = textsplit[1];
+                        u.socket.Send(Encoding.UTF8.GetBytes("yp82 " + textsplit[1]));
+
+                        for (int i = 0; i < Users.Count; i++)
+                        {
+                            if (Users[i].name == textsplit[1])
+                            {
+                                
+                                Users[i].chattpartner = u.name;
+                                Users[i].socket.Send(Encoding.UTF8.GetBytes("yp82 " + u.name));
+                            }
+                            
+                        }
+                    }
+                }
+                for (int i = 0; i < Users.Count; i++)
+                {
+                    for (int j = 0; j < Users.Count; j++)
+                    {
+                        if (Users[i].chattpartner == Users[j].name && Users[j].chattpartner != Users[i].name)
+                        {
+                            Users[i].socket.Send(Encoding.UTF8.GetBytes("yp82 none"));
+                            Users[i].chattpartner = "";
+                        }
+                    }
+                }
+
+                
+            }
+
 
             else
             {
-
-
-                Console.WriteLine("Mottagen text: '" + text + "' -> skickas till ALLA klienter!!!!!");
-
-                foreach (Socket s in ClientSockets)
+                foreach (User u in Users)
                 {
-                    if (s != current)
+                    if (u.socket == current)
                     {
-                        s.Send(Encoding.UTF8.GetBytes(text));
-                        //IPEndPoint rep = s.RemoteEndPoint as IPEndPoint;
-                        //IPEndPoint lep = s.LocalEndPoint as IPEndPoint;
-
-                        //Console.WriteLine("Remote: " + rep.Address);
-                        //Console.WriteLine("Local: " + lep.Address);
+                        for (int i = 0; i < Users.Count; i++)
+                        {
+                            if(Users[i].name == u.chattpartner)
+                            {
+                                Users[i].socket.Send(Encoding.UTF8.GetBytes(text));
+                                Console.WriteLine("Skickar: " + text + ") till: " + Users[i].name + ")");
+                            }
+                        }
                     }
+
                 }
+
+                //Console.WriteLine("Mottagen text: '" + text + "' -> skickas till ALLA klienter!!!!!");
+
+                //foreach (Socket s in ClientSockets)
+                //{
+                //    if (s != current)
+                //    {
+                //        s.Send(Encoding.UTF8.GetBytes(text));
+                //        //IPEndPoint rep = s.RemoteEndPoint as IPEndPoint;
+                //        //IPEndPoint lep = s.LocalEndPoint as IPEndPoint;
+
+                //        //Console.WriteLine("Remote: " + rep.Address);
+                //        //Console.WriteLine("Local: " + lep.Address);
+                //    }
+                //}
 
                 switch (text.ToLower())
                 {

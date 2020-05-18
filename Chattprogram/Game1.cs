@@ -18,8 +18,12 @@ namespace Chattprogram
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        static RequestWindow requestWindow;
+
         MouseState mouseState;
         MouseState oldmouseState;
+
+        Texture2D reqWindow;
 
         static Color profileColor = Color.Black;
 
@@ -27,16 +31,28 @@ namespace Chattprogram
 
         Texture2D line;
 
+        static string chattpartner;
+
+        static List<string> messages = new List<string>();
+        static List<Vector2> messagePositions = new List<Vector2>(); // --------------> Gör en klass
+        static Vector2 messagePos;
+
+        static bool requested = false;
+
         static bool usersAdded = false;
 
         KeyboardState keyBoardState;
         KeyboardState oldKeyBoardState;
+
+        static string requester;
 
         string myUsername;
 
         static List<string> usernames = new List<string>();
 
         static List<Vector2> userListPos = new List<Vector2>();
+
+        static int index = 0;
 
         static UserSection userSection = new UserSection(usernames, userListPos, usersAdded);
         Texture2D sendButton;
@@ -70,7 +86,10 @@ namespace Chattprogram
 
         bool taken = true;
 
-        int gameState = 0;
+        static List<int> yPositions = new List<int>();
+        static int yPos = 130;
+
+        static int gameState = 0;
 
         int time = 0;
         int second = 0;
@@ -189,11 +208,12 @@ namespace Chattprogram
                     //userListPos.Clear();
                     //usernames.Clear();
                     int posY = 170;
+                    profiles.Clear();
 
-                    for (int i = 1; i < messageSplit.Length - 1; i++)
+                    for (int i = 1; i < messageSplit.Length - 1; i += 2)
                     {
                         Vector2 pos = new Vector2(220, posY);
-                        Profile profile = new Profile(pos, profiles, new Rectangle(220, posY, 80, 20), messageSplit[i], messageSplit[i] + " " + messageSplit[i + 1], profileColor);
+                        Profile profile = new Profile(pos, profiles, new Rectangle(220, posY, 80, 20), messageSplit[i], messageSplit[i + 1], profileColor);
                         
                         profiles.Add(profile);
                         usernames.Add(messageSplit[i]);
@@ -201,6 +221,44 @@ namespace Chattprogram
                         posY += 50;
                     }
                     usersAdded = true;
+                }
+                else if (messageSplit[0] == "kl90")
+                {
+                    requested = true;
+                    requester = messageSplit[1];
+                    
+                }
+                else if (messageSplit[0] == "yp82")
+                {
+                    
+                    if (messageSplit[1] == "none")
+                    {
+                        
+                        chattpartner = messageSplit[1];
+                        gameState = 3;
+                    }
+                    else
+                    {
+                        messagePos = new Vector2(390, 130);
+                        //index += 1;
+                        chattpartner = messageSplit[1];
+                        gameState = 3;
+                        messages.Clear();
+                        messagePositions.Clear();
+                    }
+                    
+                }
+                else
+                {
+                    if (gameState == 3)
+                    {
+                        messages.Add("(" + chattpartner + "): " + message);
+                        messagePos.Y += 30;
+                        messagePositions.Add(messagePos);
+                        
+                        
+                    }
+                    
                 }
 
                 ReceiveResponse();
@@ -242,11 +300,17 @@ namespace Chattprogram
 
             slutlig.KeyboardInput.Initialize(this, 500f, 20);
 
+            reqWindow = Content.Load<Texture2D>("requestWindow");
+
             line = Content.Load<Texture2D>("lodrättsträck");
+            
+            
 
             sendButton = Content.Load<Texture2D>("fullsend2");
             send = new Rectangle(395, 420, 405, 30);
             refresh = new Rectangle(205, 105, 25, 25);
+
+            requestWindow = new RequestWindow(reqWindow, sendButton, new Rectangle(510, 260, 100, 50), new Rectangle(660, 260, 100, 50), "Accept", "Decline");
 
             chattwindowText = Content.Load<SpriteFont>("chattwindowText");
 
@@ -328,32 +392,72 @@ namespace Chattprogram
                 }
             }
 
+            if (mouseState.ScrollWheelValue != oldmouseState.ScrollWheelValue)
+            {
+                if (oldmouseState.ScrollWheelValue < mouseState.ScrollWheelValue)
+                {
+                    for (int i = 0; i < messages.Count; i++)
+                    {
+                        messagePositions[i] = new Vector2(messagePositions[i].X, messagePositions[i].Y + 10);
+                    }
+                }
+                if (oldmouseState.ScrollWheelValue > mouseState.ScrollWheelValue)
+                {
+                    for (int i = 0; i < messages.Count; i++)
+                    {
+                        messagePositions[i] = new Vector2(messagePositions[i].X, messagePositions[i].Y - 10);
+                    }
+                }
+            }
+
+
             if (mouseState.LeftButton == ButtonState.Pressed && oldmouseState.LeftButton == ButtonState.Released)
             {
                 //mainProfile.FunctionProfiles(mouseState, ClientSocket);
+                if (requested)
+                {
+                    requestWindow.FunctionRequestWindow(Mouse.GetState(), ClientSocket, ref requested, requester, messages, messagePositions);
+                }
                 for (int i = 0; i < profiles.Count; i++)
                 {
                     if (profiles[i].rectangle.Contains(mouseState.Position))
                     {
-
-                        ClientSocket.Send(Encoding.UTF8.GetBytes("swt5 " + profiles[i].name), SocketFlags.None);
-
+                        ClientSocket.Send(Encoding.UTF8.GetBytes("swt5 " + profiles[i].name + " " + myUsername), SocketFlags.None);
                     }
                 }
                 if (send.Contains(mouseState.Position) && gameState == 1)
                 {
-                    myUsername = textBox.Text.String;
-                    ClientSocket.Send(Encoding.UTF8.GetBytes("wea238g " + (textBox.Text.String)), SocketFlags.None);
-                    gameState = 2;
-                    textBox.Clear();
+                    if (gameState == 1)
+                    {
+                        myUsername = textBox.Text.String;
+                        ClientSocket.Send(Encoding.UTF8.GetBytes("wea238g " + (textBox.Text.String)), SocketFlags.None);
+                        gameState = 2;
+                        textBox.Clear();
+                    }
+                    //else
+                    //{
+                        
+                    //    ClientSocket.Send(Encoding.UTF8.GetBytes(textBox.Text.String), SocketFlags.None);
+                    //    gameState = 2;
+                    //    textBox.Clear();
+                    //}
+                    
 
                 }
                 if (send.Contains(mouseState.Position) && gameState > 1)
                 {
                     ClientSocket.Send(Encoding.UTF8.GetBytes(textBox.Text.String), SocketFlags.None);
+
+                    if (gameState == 3)
+                    {
+                        messages.Add("(Du): " + textBox.Text.String);
+                        messagePos.Y += 30;
+                        messagePositions.Add(messagePos);
+                    }
+                    
                     textBox.Clear();
                 }
-                if (refresh.Contains(mouseState.Position) && gameState == 2)
+                if (refresh.Contains(mouseState.Position) && gameState > 1)
                 {
                     ClientSocket.Send(Encoding.UTF8.GetBytes("erf77 "), SocketFlags.None);
                 }
@@ -403,9 +507,13 @@ namespace Chattprogram
 
             spriteBatch.Draw(chattWindow, new Vector2(200, 100), Color.White);
 
+            Funfacts(spriteBatch);
+
             //spriteBatch.DrawString(chattwindowText, textBox.Text.String, new Vector2(200, 250), Color.Black);
-            
+
             textBox.Draw(spriteBatch);
+
+            
 
             spriteBatch.DrawString(normalText, (mouseState.X + " " + mouseState.Y).ToString(), new Vector2(100, 100), Color.Black);
 
@@ -444,8 +552,6 @@ namespace Chattprogram
                 {
                     profiles[i].DrawProfiles(spriteBatch, sendButton, chattwindowText, i);
                 }
-                
-
             }
             
             if (gameState > 0)
@@ -455,13 +561,22 @@ namespace Chattprogram
 
             }
             
-            if (gameState == 2)
+            if (gameState > 1)
             {
                 spriteBatch.Draw(line, new Vector2(10, 100), Color.White);
                 spriteBatch.Draw(sendButton, refresh, null, Color.White);
+                spriteBatch.DrawString(normalText, "Logged in as: " + myUsername, new Vector2(630, 110), Color.Black);
             }
 
-            
+            for (int i = 0; i < messages.Count; i++)
+            {
+                if (messagePositions[i].Y >= 130 && messagePositions[i].Y < 410)
+                {
+                    spriteBatch.DrawString(chattwindowText, messages[i], messagePositions[i], Color.Black);
+                }
+                
+                
+            }
 
             time += 1;
 
@@ -472,7 +587,17 @@ namespace Chattprogram
                 time = 0;
             }
 
-            Funfacts(spriteBatch);
+            if (gameState == 3)
+            {
+                spriteBatch.DrawString(normalText, "Chattpartner: " + chattpartner, new Vector2(480, 110), Color.Blue);
+            }
+
+            
+
+            if (requested)
+            {
+                requestWindow.DrawRequestWindow(spriteBatch, normalText, chattwindowText, requester);
+            }
 
             spriteBatch.End();
 
