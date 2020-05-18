@@ -168,26 +168,7 @@ namespace Chattprogram
             connected = true;
         }
 
-        //private static void RequestLoop()
-        //{
 
-
-        //    Console.WriteLine("Skriv disconnect för att koppla från servern");
-        //    string requestSent = string.Empty;
-        //    try
-        //    {
-        //        while (requestSent.ToLower() != "disconnect")
-        //        {
-        //            requestSent = Console.ReadLine();
-        //            ClientSocket.Send(Encoding.UTF8.GetBytes(requestSent), SocketFlags.None);
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        Console.WriteLine("Error! - Lost server.");
-        //        Console.ReadLine();
-        //    }
-        //}
         private static void ReceiveResponse()
         {
             var buffer = new byte[2048];
@@ -203,10 +184,7 @@ namespace Chattprogram
                 
                 if (messageSplit[0] == "erf77")
                 {
-                    //userSection.GenerateUserSection(messageSplit);
                     usersAdded = false;
-                    //userListPos.Clear();
-                    //usernames.Clear();
                     int posY = 170;
                     profiles.Clear();
 
@@ -268,9 +246,6 @@ namespace Chattprogram
                 Debug.WriteLine("Frånkopplar från server...");
                 return;
             }
-
-            
-
         }
 
         public Game1()
@@ -314,16 +289,6 @@ namespace Chattprogram
 
             chattwindowText = Content.Load<SpriteFont>("chattwindowText");
 
-
-          //  chatters.Add(new Användare("Gunther", 2.6f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
-          //  chatters.Add(new Användare("Marvin Gay", 4.3f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
-          //  chatters.Add(new Användare("Tom Hanks", 0f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
-
-            //chatters.Add(new Användare("Gunther", 2.6f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
-            //chatters.Add(new Användare("Marvin Gay", 4.3f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
-            //chatters.Add(new Användare("Tom Hanks", 0f, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)));
-
-
             connectToServerThread = new Thread(ConnectToServer);
 
             textBox = new TextBox(new Rectangle(400, 450, 385, 50), 70, "", GraphicsDevice, chattwindowText, Color.Black, Color.Black, 70);
@@ -366,10 +331,6 @@ namespace Chattprogram
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            //ConnectToServer();
-            //RequestLoop();
-            //ClientSocket.Shutdown(SocketShutdown.Both);
-            //ClientSocket.Close();
             if (usernames.Count == 2)
             {
                 usersAdded = true;
@@ -434,15 +395,6 @@ namespace Chattprogram
                         gameState = 2;
                         textBox.Clear();
                     }
-                    //else
-                    //{
-                        
-                    //    ClientSocket.Send(Encoding.UTF8.GetBytes(textBox.Text.String), SocketFlags.None);
-                    //    gameState = 2;
-                    //    textBox.Clear();
-                    //}
-                    
-
                 }
                 if (send.Contains(mouseState.Position) && gameState > 1)
                 {
@@ -462,15 +414,6 @@ namespace Chattprogram
                     ClientSocket.Send(Encoding.UTF8.GetBytes("erf77 "), SocketFlags.None);
                 }
             }
-
-            //string[] username = text.Split(' ');
-            //if (username[0] == "wea238g")
-            //{
-            //    users.name.Add(username[1]);
-            //}
-
-            
-
 
             if (send.Contains(mouseState.Position))
             {
@@ -543,11 +486,6 @@ namespace Chattprogram
             
             if (usersAdded)
             {
-                //userSection.DrawUserSection(spriteBatch, chattwindowText);
-                //for (int i = 0; i < usernames.Count; i++)
-                //{
-                //    spriteBatch.DrawString(chattwindowText, usernames[i], userListPos[i], Color.Black);
-                //}
                 for (int i = 0; i < profiles.Count; i++)
                 {
                     profiles[i].DrawProfiles(spriteBatch, sendButton, chattwindowText, i);
@@ -591,8 +529,6 @@ namespace Chattprogram
             {
                 spriteBatch.DrawString(normalText, "Chattpartner: " + chattpartner, new Vector2(480, 110), Color.Blue);
             }
-
-            
 
             if (requested)
             {
