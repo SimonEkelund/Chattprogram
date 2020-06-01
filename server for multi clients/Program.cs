@@ -11,7 +11,7 @@ namespace tbServerMutlipleClients
     {
         private static Socket _serverSocket;
         private static readonly List<Socket> ClientSockets = new List<Socket>(); // lista med user
-        private static readonly List<User> Users = new List<User>();
+        private static readonly List<User> users = new List<User>();
         private const int BufferSize = 2048;
         private const int Port = 65002;
         private static readonly byte[] Buffer = new byte[BufferSize];
@@ -52,7 +52,6 @@ namespace tbServerMutlipleClients
             Socket socket = _serverSocket.EndAccept(ar);
             Console.WriteLine("Klient ansluten...");
 
-            //socket.Send(Encoding.UTF8.GetBytes("välj ett namn")); 
             socket.BeginReceive(Buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, socket);
 
             ClientSockets.Add(socket);
@@ -77,7 +76,7 @@ namespace tbServerMutlipleClients
 
             string userName = Encoding.UTF8.GetString(Buffer, 0, received);
             User u = new User(userName, 0, socket, "");
-            Users.Add(u);
+            users.Add(u);
             ClientSockets.Add(socket);
             socket.BeginReceive(Buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, socket);
 
@@ -102,12 +101,6 @@ namespace tbServerMutlipleClients
                 ClientSockets.Remove(current);
                 return;
             }
-           
-            
-
-
-
-
 
             string text = Encoding.UTF8.GetString(Buffer, 0, received);
 
@@ -123,22 +116,21 @@ namespace tbServerMutlipleClients
             if (textsplit[0] == "wea238g")
             {
                 
-                Users.Add(new User(textsplit[1], 0, current, ""));
-                
+                users.Add(new User(textsplit[1], 0, current, ""));
 
             }
             else if (textsplit[0] == "erf77")
             {
                 string namelist = "";
-                for (int i = 0; i < Users.Count; i++)
+                for (int i = 0; i < users.Count; i++)
                 {
-                    namelist += Users[i].name + " " + Users[i].rating + " ";
+                    namelist += users[i].name + " " + users[i].rating + " ";
                 }
                 current.Send(Encoding.UTF8.GetBytes("erf77 " + namelist));
             }
             else if (textsplit[0] == "swt5")
             {
-                foreach (User u in Users)
+                foreach (User u in users)
                 {
                     if (u.name == textsplit[1])
                     {
@@ -149,7 +141,7 @@ namespace tbServerMutlipleClients
             }
             else if (textsplit[0] == "acc47")
             {
-                foreach (User u in Users)
+                foreach (User u in users)
                 {
                     
                     if (u.socket == current)
@@ -157,26 +149,26 @@ namespace tbServerMutlipleClients
                         u.chattpartner = textsplit[1];
                         u.socket.Send(Encoding.UTF8.GetBytes("yp82 " + textsplit[1]));
 
-                        for (int i = 0; i < Users.Count; i++)
+                        for (int i = 0; i < users.Count; i++)
                         {
-                            if (Users[i].name == textsplit[1])
+                            if (users[i].name == textsplit[1])
                             {
                                 
-                                Users[i].chattpartner = u.name;
-                                Users[i].socket.Send(Encoding.UTF8.GetBytes("yp82 " + u.name));
+                                users[i].chattpartner = u.name;
+                                users[i].socket.Send(Encoding.UTF8.GetBytes("yp82 " + u.name));
                             }
                             
                         }
                     }
                 }
-                for (int i = 0; i < Users.Count; i++)
+                for (int i = 0; i < users.Count; i++)
                 {
-                    for (int j = 0; j < Users.Count; j++)
+                    for (int j = 0; j < users.Count; j++)
                     {
-                        if (Users[i].chattpartner == Users[j].name && Users[j].chattpartner != Users[i].name)
+                        if (users[i].chattpartner == users[j].name && users[j].chattpartner != users[i].name)
                         {
-                            Users[i].socket.Send(Encoding.UTF8.GetBytes("yp82 none"));
-                            Users[i].chattpartner = "";
+                            users[i].socket.Send(Encoding.UTF8.GetBytes("yp82 none"));
+                            users[i].chattpartner = "";
                         }
                     }
                 }
@@ -187,36 +179,21 @@ namespace tbServerMutlipleClients
 
             else
             {
-                foreach (User u in Users)
+                foreach (User u in users)
                 {
                     if (u.socket == current)
                     {
-                        for (int i = 0; i < Users.Count; i++)
+                        for (int i = 0; i < users.Count; i++)
                         {
-                            if(Users[i].name == u.chattpartner)
+                            if(users[i].name == u.chattpartner)
                             {
-                                Users[i].socket.Send(Encoding.UTF8.GetBytes(text));
-                                Console.WriteLine("Skickar: " + text + ") till: " + Users[i].name + ")");
+                                users[i].socket.Send(Encoding.UTF8.GetBytes(text));
+                                Console.WriteLine("Skickar: " + text + ") till: " + users[i].name + ")");
                             }
                         }
                     }
 
                 }
-
-                //Console.WriteLine("Mottagen text: '" + text + "' -> skickas till ALLA klienter!!!!!");
-
-                //foreach (Socket s in ClientSockets)
-                //{
-                //    if (s != current)
-                //    {
-                //        s.Send(Encoding.UTF8.GetBytes(text));
-                //        //IPEndPoint rep = s.RemoteEndPoint as IPEndPoint;
-                //        //IPEndPoint lep = s.LocalEndPoint as IPEndPoint;
-
-                //        //Console.WriteLine("Remote: " + rep.Address);
-                //        //Console.WriteLine("Local: " + lep.Address);
-                //    }
-                //}
 
                 switch (text.ToLower())
                 {

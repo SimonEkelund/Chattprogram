@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.IO;
 
 
 namespace Chattprogram
@@ -18,59 +19,55 @@ namespace Chattprogram
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        static List<string> messages = new List<string>();
+        List<Vector2> positions;
+        List<int> randomized = new List<int>();
+        static List<Vector2> userListPos = new List<Vector2>();
+        static List<Profile> profiles = new List<Profile>();
+
         static RequestWindow requestWindow;
 
         MouseState mouseState;
         MouseState oldmouseState;
+        KeyboardState keyBoardState;
+        KeyboardState oldKeyBoardState;
 
         Texture2D reqWindow;
-
-        static Color profileColor = Color.Black;
-
-        Profile mainProfile;
-
         Texture2D line;
 
-        static string chattpartner;
+        static Color profileColor = Color.Black;
+        Color colour;
 
-        static List<string> messages = new List<string>();
-        static List<Vector2> messagePositions = new List<Vector2>(); // --------------> Gör en klass
+        int time = 0;
+        int second = 0;
+        int second2 = 0;
+        static int gameState = 0;
+
+        static string chattpartner;
+        static string requester;
+
+        string myUsername;
+
         static Vector2 messagePos;
 
         static bool requested = false;
 
         static bool usersAdded = false;
 
-        KeyboardState keyBoardState;
-        KeyboardState oldKeyBoardState;
-
-        static string requester;
-
-        string myUsername;
-
+        static List<Vector2> messagePositions = new List<Vector2>();
         static List<string> usernames = new List<string>();
+        List<string> funfacts = new List<string>();
 
-        static List<Vector2> userListPos = new List<Vector2>();
+        Texture2D chattWindow;
 
-        static int index = 0;
-
-        static UserSection userSection = new UserSection(usernames, userListPos, usersAdded);
         Texture2D sendButton;
-
-        static List<Profile> profiles = new List<Profile>();
-
-        Color colour;
 
         Rectangle send;
         Rectangle refresh;
 
-        List<Användare> chatters = new List<Användare>();
-
         private static readonly Socket ClientSocket =
             new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private const int Port = 65002;
-
-        static bool connected = false;
 
         TextBox textBox;
 
@@ -79,63 +76,48 @@ namespace Chattprogram
         SpriteFont normalText;
         SpriteFont chattwindowText;
         SpriteFont sendText;
-
-        Texture2D chattWindow;
-
         SpriteFont huge;
 
+        static bool connected = false;
         bool taken = true;
 
-        static List<int> yPositions = new List<int>();
-        static int yPos = 130;
-
-        static int gameState = 0;
-
-        int time = 0;
-        int second = 0;
-        int second2 = 0;
-
-        List<string> funfacts;
-
-        List<Vector2> positions;
-
-        List<int> randomized;
-
-        List<int> takenList = new List<int>();
 
         public void Funfacts(SpriteBatch sb)
         {
-            if (second % 60 == 0 && second > 0)
+            if (second % 10 == 0 && second > 0)
             {
+                taken = true;
                 second = 0;
                 while (taken == true)
                 {
-                    takenList.Clear();
-
                     taken = false;
 
-                    randomized[0] = random.Next(0, 18);
-                    takenList.Add(randomized[0]);
-
-                    for (int i = 1; i < 4; i++)
+                    for(int i = 0; i < 4; i++)
                     {
                         randomized[i] = random.Next(0, 18);
+                    }
 
-                        if (randomized[i] == takenList[i - takenList.Count] || randomized[i] == takenList[i - 1])
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (taken)
                         {
-                            taken = true;
                             break;
                         }
-                        else
+                        for (int j = 0; j < 4; j++)
                         {
-                            takenList.Add(randomized[i]);
+                            if (randomized[i] == randomized[j] && i != j)
+                            {
+                                taken = true;
+                                break;
+                            }
+                            else
+                            {
+                                taken = false;
+                            }
                         }
-                        
                     }
 
                 }
-
-                taken = true;
             }
 
             for (int i = 0; i < 4; i++)
@@ -218,7 +200,6 @@ namespace Chattprogram
                     else
                     {
                         messagePos = new Vector2(390, 130);
-                        //index += 1;
                         chattpartner = messageSplit[1];
                         gameState = 3;
                         messages.Clear();
@@ -233,8 +214,6 @@ namespace Chattprogram
                         messages.Add("(" + chattpartner + "): " + message);
                         messagePos.Y += 30;
                         messagePositions.Add(messagePos);
-                        
-                        
                     }
                     
                 }
@@ -278,8 +257,6 @@ namespace Chattprogram
             reqWindow = Content.Load<Texture2D>("requestWindow");
 
             line = Content.Load<Texture2D>("lodrättsträck");
-            
-            
 
             sendButton = Content.Load<Texture2D>("fullsend2");
             send = new Rectangle(395, 420, 405, 30);
@@ -292,7 +269,6 @@ namespace Chattprogram
             connectToServerThread = new Thread(ConnectToServer);
 
             textBox = new TextBox(new Rectangle(400, 450, 385, 50), 70, "", GraphicsDevice, chattwindowText, Color.Black, Color.Black, 70);
-            
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -300,20 +276,24 @@ namespace Chattprogram
             normalText = Content.Load<SpriteFont>("normalText");
             sendText = Content.Load<SpriteFont>("sendText");
 
-            randomized = new List<int> { random.Next(0, 18), random.Next(0, 18), random.Next(0, 18),
-            random.Next(0, 18)};
+            randomized = new List<int> { random.Next(0, 18), random.Next(0, 18), random.Next(0, 18), random.Next(0, 18) };
 
             chattWindow = Content.Load<Texture2D>("vitt");
 
-            funfacts = new List<string> { "Peppa pig is 7 feet tall", "George W Bush invaded my \nkitchen for oil",
-            "The Corona virus caused a whole \nnew meaning of stranger danger", "Cooking a bat lead to the \nshortage of toilet paper in \nthe US",
-            "Handing out your Bank Account \ndetails may lead to devastating \nconsequences", "If your body could digest \nuranium consuming one gram of \nit would make you 2267 kg \nheavier",
-            "People are catfished around the \nworld more than 1800 times per \nmonth, stay safe", "Kik, Omegle, Whatsapp, \nMessenger and Snapchat \nhas herpes",
-            "Once a kid got a triple kill in cod \nand asked his mom to get the \ncamera", "Be nice chatting in this forum, \notherwise you might be sent to \nthe gulag",
-            "Successful men like Bezos and \nBill Gates have killed on \nnumerous occasions", "THERZZ A BOMB IN ZERE \nsaid Arnold Schwarznegger",
-            "There are no trustworthy \npersons in the White House, \nthey are all snakes", "The Ranch has recovered more \npersons than all hospitals put \ntogether",
-            "Never give out personal \ninformation to anyone, \neven if it is Indian \ntech support", "Mike Tyson was once offered to \nbox Putin for 80 000 000 dollars, \nhe never accepted",
-            "Milk is cereal sauce, \nchange my mind", "Poop are dense farts", "WAZUP"};
+            StreamReader sr = new StreamReader("../../../../Textfile1.txt");
+            string funfact = sr.ReadLine();
+            funfact = funfact.Replace("\\n", Environment.NewLine);
+
+            while (funfact != null)
+            {
+                funfacts.Add(funfact);
+                funfact = sr.ReadLine();
+                if (funfact != null)
+                {
+                    funfact = funfact.Replace("\\n", Environment.NewLine);
+                }
+                
+            }
 
             positions = new List<Vector2> { new Vector2(5, 180), new Vector2(5, 380), new Vector2(805, 180), 
             new Vector2(805, 380)};
@@ -374,11 +354,12 @@ namespace Chattprogram
 
             if (mouseState.LeftButton == ButtonState.Pressed && oldmouseState.LeftButton == ButtonState.Released)
             {
-                //mainProfile.FunctionProfiles(mouseState, ClientSocket);
+                
                 if (requested)
                 {
                     requestWindow.FunctionRequestWindow(Mouse.GetState(), ClientSocket, ref requested, requester, messages, messagePositions);
                 }
+
                 for (int i = 0; i < profiles.Count; i++)
                 {
                     if (profiles[i].rectangle.Contains(mouseState.Position))
@@ -386,6 +367,7 @@ namespace Chattprogram
                         ClientSocket.Send(Encoding.UTF8.GetBytes("swt5 " + profiles[i].name + " " + myUsername), SocketFlags.None);
                     }
                 }
+
                 if (send.Contains(mouseState.Position) && gameState == 1)
                 {
                     if (gameState == 1)
@@ -396,23 +378,28 @@ namespace Chattprogram
                         textBox.Clear();
                     }
                 }
-                if (send.Contains(mouseState.Position) && gameState > 1)
-                {
-                    ClientSocket.Send(Encoding.UTF8.GetBytes(textBox.Text.String), SocketFlags.None);
 
-                    if (gameState == 3)
-                    {
-                        messages.Add("(Du): " + textBox.Text.String);
-                        messagePos.Y += 30;
-                        messagePositions.Add(messagePos);
-                    }
-                    
-                    textBox.Clear();
-                }
-                if (refresh.Contains(mouseState.Position) && gameState > 1)
+                if (gameState > 1)
                 {
-                    ClientSocket.Send(Encoding.UTF8.GetBytes("erf77 "), SocketFlags.None);
+                    if (send.Contains(mouseState.Position))
+                    {
+                        ClientSocket.Send(Encoding.UTF8.GetBytes(textBox.Text.String), SocketFlags.None);
+
+                        if (gameState == 3)
+                        {
+                            messages.Add("(Du): " + textBox.Text.String);
+                            messagePos.Y += 30;
+                            messagePositions.Add(messagePos);
+                        }
+
+                        textBox.Clear();
+                    }
+                    if (refresh.Contains(mouseState.Position))
+                    {
+                        ClientSocket.Send(Encoding.UTF8.GetBytes("erf77 "), SocketFlags.None);
+                    }
                 }
+                
             }
 
             if (send.Contains(mouseState.Position))
@@ -452,11 +439,7 @@ namespace Chattprogram
 
             Funfacts(spriteBatch);
 
-            //spriteBatch.DrawString(chattwindowText, textBox.Text.String, new Vector2(200, 250), Color.Black);
-
             textBox.Draw(spriteBatch);
-
-            
 
             spriteBatch.DrawString(normalText, (mouseState.X + " " + mouseState.Y).ToString(), new Vector2(100, 100), Color.Black);
 
@@ -479,13 +462,14 @@ namespace Chattprogram
                 }
             }
             
-            if (gameState == 1/* || usersAdded == true*/)
+            if (gameState == 1)
             {
                 spriteBatch.DrawString(chattwindowText, "V Choose username V", new Vector2(490, 375), Color.Gray);
             }
             
             if (usersAdded)
             {
+                profiles.Sort();
                 for (int i = 0; i < profiles.Count; i++)
                 {
                     profiles[i].DrawProfiles(spriteBatch, sendButton, chattwindowText, i);
@@ -496,7 +480,6 @@ namespace Chattprogram
             {
                 spriteBatch.Draw(sendButton, send, null, colour);
                 spriteBatch.DrawString(sendText, "SEND", new Vector2(490, 427), Color.Black);
-
             }
             
             if (gameState > 1)
@@ -512,13 +495,12 @@ namespace Chattprogram
                 {
                     spriteBatch.DrawString(chattwindowText, messages[i], messagePositions[i], Color.Black);
                 }
-                
-                
             }
 
             time += 1;
 
             spriteBatch.DrawString(normalText, time + " " + second, new Vector2(50, 30), Color.Black);
+
             if (time % 60 == 0)
             {
                 second += 1;
