@@ -58,29 +58,29 @@ namespace tbServerMutlipleClients
      
             _serverSocket.BeginAccept(AcceptCallback, null);
         }
-        private static void GetUserName(IAsyncResult ar) 
-        {
+        //private static void GetUserName(IAsyncResult ar) 
+        //{
            
-            Socket socket = (Socket)ar.AsyncState;
-            int received;
-            try
-            {
-                received = socket.EndReceive(ar);
-            }
-            catch (SocketException)
-            {
-                Console.WriteLine("Klient frånkopplad...");
-                socket.Close();
-                return;
-            }
+        //    Socket socket = (Socket)ar.AsyncState;
+        //    int received;
+        //    try
+        //    {
+        //        received = socket.EndReceive(ar);
+        //    }
+        //    catch (SocketException)
+        //    {
+        //        Console.WriteLine("Klient frånkopplad...");
+        //        socket.Close();
+        //        return;
+        //    }
 
-            string userName = Encoding.UTF8.GetString(Buffer, 0, received);
-            User u = new User(userName, 0, socket, "");
-            users.Add(u);
-            ClientSockets.Add(socket);
-            socket.BeginReceive(Buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, socket);
+        //    string userName = Encoding.UTF8.GetString(Buffer, 0, received);
+        //    User u = new User(userName, 0, socket, "");
+        //    users.Add(u);
+        //    ClientSockets.Add(socket);
+        //    socket.BeginReceive(Buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, socket);
 
-        }
+        //}
         
 
 

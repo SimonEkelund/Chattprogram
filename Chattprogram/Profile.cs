@@ -11,16 +11,18 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Chattprogram
 {
-    class Profile : IComparable<Profile>
+    class Profile : DrawFunctions
     {
         Vector2 pos;
         List<Profile> profiles;
         public Rectangle rectangle;
-        public string name { get; set; }
+        public string name;
         string rating;
         public Color color;
+        public int value = 0;
 
-        public Profile(Vector2 pos, List<Profile> profiles, Rectangle rectangle, string name, string rating, Color color)
+        public Profile(Vector2 pos, List<Profile> profiles, Rectangle rectangle, string name, string rating,
+            Color color) : base(spriteFonts)
         {
             this.pos = pos;
             this.profiles = profiles;
@@ -29,11 +31,7 @@ namespace Chattprogram
             this.rating = rating;
             this.color = color;
         }
-        
-        public int CompareTo(Profile other)
-        {
-            return name.CompareTo(other.name);
-        }
+       
 
         public void FunctionProfiles(MouseState mouseState, Socket ClientSocket)
         {
@@ -48,10 +46,10 @@ namespace Chattprogram
             }
         }
 
-        public void DrawProfiles(SpriteBatch sb, Texture2D texture, SpriteFont spriteFont, int index)
+        public void DrawProfiles(SpriteBatch sb, Texture2D texture/*, SpriteFont spriteFont*/, int index)
         {
             sb.Draw(texture, profiles[index].rectangle, Color.White);
-            sb.DrawString(spriteFont, profiles[index].name + " " + profiles[index].rating, pos, profiles[index].color);
+            sb.DrawString(base.GetFontChattwindowText(), profiles[index].name + " " + profiles[index].rating, pos, profiles[index].color);
         }
 
     }

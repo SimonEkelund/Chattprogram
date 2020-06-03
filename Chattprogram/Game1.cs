@@ -20,7 +20,7 @@ namespace Chattprogram
         SpriteBatch spriteBatch;
 
         static List<string> messages = new List<string>();
-        List<Vector2> positions;
+        List<Vector2> postions;
         List<int> randomized = new List<int>();
         static List<Vector2> userListPos = new List<Vector2>();
         static List<Profile> profiles = new List<Profile>();
@@ -48,13 +48,17 @@ namespace Chattprogram
 
         string myUsername;
 
+        static Element element = new Element(0, 'ö');
+        static List<Element> elements = new List<Element>();
+
+
         static Vector2 messagePos;
 
         static bool requested = false;
 
         static bool usersAdded = false;
 
-        static List<Vector2> messagePositions = new List<Vector2>();
+        static List<Vector2> messagepostions = new List<Vector2>();
         static List<string> usernames = new List<string>();
         List<string> funfacts = new List<string>();
 
@@ -81,10 +85,14 @@ namespace Chattprogram
         static bool connected = false;
         bool taken = true;
 
+        List<SpriteFont> spriteFonts = new List<SpriteFont>();
+        spriteFonts.Add(chattwindowText);
+        spriteFonts.Add(normalText);
+        DrawFunctions drawFunctions = new DrawFunctions(spriteFonts);
 
         public void Funfacts(SpriteBatch sb)
         {
-            if (second % 10 == 0 && second > 0)
+            if (second % 60 == 0 && second > 0)
             {
                 taken = true;
                 second = 0;
@@ -122,7 +130,7 @@ namespace Chattprogram
 
             for (int i = 0; i < 4; i++)
             {
-                sb.DrawString(normalText, funfacts[randomized[i]], positions[i], Color.Black);
+                sb.DrawString(normalText, funfacts[randomized[i]], postions[i], Color.Black);
             }
         }
 
@@ -173,13 +181,22 @@ namespace Chattprogram
                     for (int i = 1; i < messageSplit.Length - 1; i += 2)
                     {
                         Vector2 pos = new Vector2(220, posY);
-                        Profile profile = new Profile(pos, profiles, new Rectangle(220, posY, 80, 20), messageSplit[i], messageSplit[i + 1], profileColor);
+                        Profile profile = new Profile(pos, profiles, new Rectangle(220, posY, 80, 20),
+                            messageSplit[i], messageSplit[i + 1], profileColor);
                         
                         profiles.Add(profile);
                         usernames.Add(messageSplit[i]);
                         userListPos.Add(pos);
                         posY += 50;
                     }
+                    element.SortProfiles(elements, profiles);
+
+                    for (int i = 0; i < profiles.Count; i++)
+                    {
+                        profiles[i].rectangle.Y = (int)userListPos[i].Y;
+                        profiles[i].pos.Y = userListPos[i].Y;
+                    }
+
                     usersAdded = true;
                 }
                 else if (messageSplit[0] == "kl90")
@@ -203,7 +220,7 @@ namespace Chattprogram
                         chattpartner = messageSplit[1];
                         gameState = 3;
                         messages.Clear();
-                        messagePositions.Clear();
+                        messagepostions.Clear();
                     }
                     
                 }
@@ -213,7 +230,7 @@ namespace Chattprogram
                     {
                         messages.Add("(" + chattpartner + "): " + message);
                         messagePos.Y += 30;
-                        messagePositions.Add(messagePos);
+                        messagepostions.Add(messagePos);
                     }
                     
                 }
@@ -251,6 +268,8 @@ namespace Chattprogram
         {
             Thread connectToServerThread = new Thread(new ThreadStart(ConnectToServer));
             connectToServerThread.Start();
+
+            element.GenerateElements(elements);
 
             slutlig.KeyboardInput.Initialize(this, 500f, 20);
 
@@ -295,7 +314,7 @@ namespace Chattprogram
                 
             }
 
-            positions = new List<Vector2> { new Vector2(5, 180), new Vector2(5, 380), new Vector2(805, 180), 
+            postions = new List<Vector2> { new Vector2(5, 180), new Vector2(5, 380), new Vector2(805, 180), 
             new Vector2(805, 380)};
         }
 
@@ -310,11 +329,6 @@ namespace Chattprogram
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            if (usernames.Count == 2)
-            {
-                usersAdded = true;
-            }
 
             if (gameState > 0)
             {
@@ -339,14 +353,14 @@ namespace Chattprogram
                 {
                     for (int i = 0; i < messages.Count; i++)
                     {
-                        messagePositions[i] = new Vector2(messagePositions[i].X, messagePositions[i].Y + 10);
+                        messagepostions[i] = new Vector2(messagepostions[i].X, messagepostions[i].Y + 10);
                     }
                 }
                 if (oldmouseState.ScrollWheelValue > mouseState.ScrollWheelValue)
                 {
                     for (int i = 0; i < messages.Count; i++)
                     {
-                        messagePositions[i] = new Vector2(messagePositions[i].X, messagePositions[i].Y - 10);
+                        messagepostions[i] = new Vector2(messagepostions[i].X, messagepostions[i].Y - 10);
                     }
                 }
             }
@@ -357,7 +371,7 @@ namespace Chattprogram
                 
                 if (requested)
                 {
-                    requestWindow.FunctionRequestWindow(Mouse.GetState(), ClientSocket, ref requested, requester, messages, messagePositions);
+                    requestWindow.FunctionRequestWindow(Mouse.GetState(), ClientSocket, ref requested, requester, messages, messagepostions);
                 }
 
                 for (int i = 0; i < profiles.Count; i++)
@@ -389,7 +403,7 @@ namespace Chattprogram
                         {
                             messages.Add("(Du): " + textBox.Text.String);
                             messagePos.Y += 30;
-                            messagePositions.Add(messagePos);
+                            messagepostions.Add(messagePos);
                         }
 
                         textBox.Clear();
@@ -469,10 +483,10 @@ namespace Chattprogram
             
             if (usersAdded)
             {
-                profiles.Sort();
+                
                 for (int i = 0; i < profiles.Count; i++)
                 {
-                    profiles[i].DrawProfiles(spriteBatch, sendButton, chattwindowText, i);
+                    profiles[i].DrawProfiles(spriteBatch, sendButton, i);
                 }
             }
             
@@ -491,9 +505,9 @@ namespace Chattprogram
 
             for (int i = 0; i < messages.Count; i++)
             {
-                if (messagePositions[i].Y >= 130 && messagePositions[i].Y < 410)
+                if (messagepostions[i].Y >= 130 && messagepostions[i].Y < 410)
                 {
-                    spriteBatch.DrawString(chattwindowText, messages[i], messagePositions[i], Color.Black);
+                    spriteBatch.DrawString(chattwindowText, messages[i], messagepostions[i], Color.Black);
                 }
             }
 

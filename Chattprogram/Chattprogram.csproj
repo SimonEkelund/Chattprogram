@@ -41,10 +41,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Användare.cs" />
     <Compile Include="Cursor.cs" />
+    <Compile Include="DrawFunctions.cs" />
+    <Compile Include="Element.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="GUI.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="KeyboarInput.cs" />
     <Compile Include="Message.cs" />

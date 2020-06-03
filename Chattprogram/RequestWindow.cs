@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Chattprogram
 {
-    class RequestWindow
+    class RequestWindow : DrawFunctions
     {
         Texture2D window;
         Texture2D button;
@@ -19,9 +19,9 @@ namespace Chattprogram
         Rectangle declineButton;
         string accept;
         string decline;
-        
 
-        public RequestWindow()
+
+        public RequestWindow():base(spriteFonts)
         {
             window = null;
             button = null;
@@ -32,7 +32,8 @@ namespace Chattprogram
             
         }
 
-        public RequestWindow(Texture2D window, Texture2D button, Rectangle acceptButton, Rectangle declineButton, string accept, string decline)
+        public RequestWindow(Texture2D window, Texture2D button, Rectangle acceptButton, Rectangle declineButton,
+            string accept, string decline):base(spriteFonts)
         {
             this.window = window;
             this.button = button;
@@ -60,15 +61,15 @@ namespace Chattprogram
             }
         }
 
-        public void DrawRequestWindow(SpriteBatch sb, SpriteFont title, SpriteFont boxes, string requester)
+        public void DrawRequestWindow(SpriteBatch sb, /*SpriteFont title, SpriteFont boxes,*/ string requester)
         {
             sb.Draw(window, new Rectangle(490, 180, 300, 200), Color.White);
             sb.Draw(button, acceptButton, Color.Green);
             sb.Draw(button, declineButton, Color.Red);
 
-            sb.DrawString(title, "Request from: [" + requester + "]", new Vector2(510, 200), Color.Black);
-            sb.DrawString(boxes, "Accept", new Vector2(520, 270), Color.Black);
-            sb.DrawString(boxes, "Decline", new Vector2(670, 270), Color.Black);
+            sb.DrawString(base.GetFontNormalText(), "Request from: [" + requester + "]", new Vector2(510, 200), Color.Black);
+            sb.DrawString(base.GetFontChattwindowText(), "Accept", new Vector2(520, 270), Color.Black);
+            sb.DrawString(base.GetFontChattwindowText(), "Decline", new Vector2(670, 270), Color.Black);
         }
 
     }
